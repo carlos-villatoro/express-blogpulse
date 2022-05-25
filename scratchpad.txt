@@ -1,0 +1,8 @@
+table name:comment
+
+name: VARCHAR
+content: text
+articleId: FOREIGN KEY REF article.id
+
+### STEP 1: create the model
+sequelize model:create --name comment --attributes name:string,content:text,articleId:integer

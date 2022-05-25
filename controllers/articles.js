@@ -1,4 +1,5 @@
 let express = require('express')
+const { redirect } = require('express/lib/response')
 let db = require('../models')
 let router = express.Router()
 
@@ -32,17 +33,41 @@ router.get('/new', (req, res) => {
 router.get('/:id', (req, res) => {
   db.article.findOne({
     where: { id: req.params.id },
-    include: [db.author]
+    include: [db.author, db.comment]
   })
-  .then((article) => {
+  .then(async (article) => {
     if (!article) throw Error()
-    console.log(article.author)
-    res.render('articles/show', { article: article })
+    // console.log(article.author)
+    console.log(article)
+    res.render('articles/show', { 
+      article: article,
+      articleComments: article.comments
+    })
   })
   .catch((error) => {
     console.log(error)
     res.status(400).render('main/404')
   })
 })
+
+// POST /articles/:id 
+// router.post('/:id', async (req,res)=>{
+//  try{
+//    console.log(req.body.name)
+//   const newComment = await db.comment.create({
+//     where: {
+//       name: req.body.name,
+//       content: req.body.content,
+//       articleId: req.params.id
+//     }
+//   })
+//   console.log(newComment)
+//   // res.redirect('articles/:id')
+//  } catch (err){
+//    console.log(err)
+//  }
+// })
+
+
 
 module.exports = router
